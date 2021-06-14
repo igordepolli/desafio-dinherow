@@ -22,4 +22,19 @@ Article.belongsTo(User);
 Article.hasMany(Comment, { onDelete: 'CASCADE' });
 Comment.belongsTo(Article);
 
+// Relation 1 to many between User and Comment
+User.hasMany(Comment, { onDelete: 'CASCADE' });
+Comment.belongsTo(User);
+
+// Relation many to many between User and User(Followers)
+User.belongsToMany(User, { through: 'UserUser', as: 'Followers' });
+
+// Relation many to many between User and Articles(Favourites)
+Article.belongsToMany(User, { through: 'UserArticle' });
+User.belongsToMany(Article, { through: 'UserArticle' });
+
+// Relation many to many between Article and Tags(TagList)
+Article.belongsToMany(Tag, { through: 'ArticleTag' });
+Tag.belongsToMany(Article, { through: 'ArticleTag' });
+
 module.exports = sequelize;
