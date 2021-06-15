@@ -24,6 +24,7 @@
         "indent": [
             "warn",
             2
-        ]
+        ],
+        "class-methods-use-this": "off"
     }
 }
