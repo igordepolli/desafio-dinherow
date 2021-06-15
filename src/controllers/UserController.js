@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User');
 
 class UserController {
-  async create(req, res) {
+  async store(req, res) {
     try {
       const {
         email, username, bio, image
@@ -28,6 +28,12 @@ class UserController {
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
+  }
+
+  async findAll(req, res) {
+    const users = await User.findAll();
+
+    return res.json(users);
   }
 }
 
