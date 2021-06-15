@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
-const JwtConfig = require('../utils/Jwt');
+const jwtConfig = require('../utils/jwt');
 
 class SessionController {
   async login(req, res) {
@@ -25,7 +25,7 @@ class SessionController {
       return res.json({
         user: {
           email,
-          token: jwt.sign({ id }, JwtConfig.secret, { expiresIn: JwtConfig.expiresIn }),
+          token: jwt.sign({ id }, jwtConfig.secret, { expiresIn: jwtConfig.expiresIn }),
           username,
           bio,
           image

@@ -1,6 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 const express = require('express');
 
+const authMiddleware = require('./src/middlewares/auth');
+
 const UserController = require('./src/controllers/UserController');
 const SessionController = require('./src/controllers/SessionController');
 const ProfileController = require('./src/controllers/ProfileController');

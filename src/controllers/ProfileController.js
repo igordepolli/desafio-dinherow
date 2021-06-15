@@ -1,6 +1,10 @@
 const User = require('../models/User');
 
 class ProfileController {
+  async follow(req, res) {
+    //
+  }
+
   async get(req, res) {
     try {
       const { username } = req.params;
