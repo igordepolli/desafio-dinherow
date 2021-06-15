@@ -5,7 +5,6 @@ const UserController = require('./src/controllers/UserController');
 
 const routes = express.Router();
 
-routes.post('/signup', UserController.store);
-routes.get('/users', UserController.findAll);
+routes.post('/api/users', UserController.store);
 
 module.exports = routes;
