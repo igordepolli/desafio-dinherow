@@ -3,13 +3,12 @@ const { promisify } = require('util');
 const jwtConfig = require('../utils/jwt');
 
 module.exports = async (req, res, next) => {
-  const [, token] = req.headers.authorization.split(' ');
-
-  if (!token) {
-    return res.status(401).json({ message: 'Token not provided!' });
-  }
-
   try {
+    if (!req.headers.authorization) {
+      return res.status(401).json({ message: 'Token not provided!' });
+    }
+    const [, token] = req.headers.authorization.split(' ');
+
     const decoded = await promisify(jwt.verify)(token, jwtConfig.secret);
     req.userId = decoded.id;
     return next();

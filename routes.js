@@ -14,5 +14,6 @@ routes.post('/api/users', UserController.store);
 
 routes.get('/api/profiles/:username', ProfileController.get);
 routes.post('/api/profiles/:username/follow', authMiddleware, ProfileController.follow);
+routes.delete('/api/profiles/:username/follow', authMiddleware, ProfileController.unfollow);
 
 module.exports = routes;
