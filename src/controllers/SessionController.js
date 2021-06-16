@@ -22,7 +22,7 @@ class SessionController {
       const {
         id, username, bio, image
       } = user;
-      return res.json({
+      return res.status(200).json({
         user: {
           email,
           token: jwt.sign({ id }, jwtConfig.secret, { expiresIn: jwtConfig.expiresIn }),

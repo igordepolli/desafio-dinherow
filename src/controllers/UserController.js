@@ -36,7 +36,25 @@ class UserController {
         image
       });
 
-      return res.json({ user });
+      return res.status(200).json({ user });
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  }
+
+  async getCurrentUser(req, res) {
+    try {
+      const user = await User.findByPk(req.userId);
+
+      if (!user) {
+        throw new Error('User not found!');
+      }
+
+      const [, token] = req.headers.authorization.split(' ');
+      user.dataValues.token = token;
+      delete user.dataValues.password;
+
+      return res.status(200).json({ user });
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
