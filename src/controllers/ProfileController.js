@@ -13,8 +13,8 @@ class ProfileController {
 
       let following = false;
 
-      if (req.body.user) {
-        const user = await User.findOne({ where: { email: req.body.user.email } });
+      if (req.userId) {
+        const user = await User.findByPk(req.userId);
 
         if (user) {
         // eslint-disable-next-line no-restricted-syntax
@@ -50,8 +50,7 @@ class ProfileController {
         throw new Error(`Profile ${username} not found!`);
       }
 
-      const { email } = req.body.user;
-      const user = await User.findOne({ where: { email } });
+      const user = await User.findByPk(req.userId);
 
       // eslint-disable-next-line no-restricted-syntax
       for (const i of profile.Followers) {
@@ -78,8 +77,7 @@ class ProfileController {
         throw new Error(`Profile ${username} not found!`);
       }
 
-      const { email } = req.body.user;
-      const user = await User.findOne({ where: { email } });
+      const user = await User.findByPk(req.userId);
 
       // eslint-disable-next-line no-restricted-syntax
       for (const i of profile.Followers) {
