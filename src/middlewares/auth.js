@@ -3,7 +3,8 @@ const { promisify } = require('util');
 const jwtConfig = require('../utils/jwt');
 
 module.exports = async (req, res, next) => {
-  const token = req.headers.authorization;
+  const [, token] = req.headers.authorization.split(' ');
+
   if (!token) {
     return res.status(401).json({ message: 'Token not provided!' });
   }

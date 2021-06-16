@@ -13,5 +13,6 @@ routes.post('/api/users/login', SessionController.login);
 routes.post('/api/users', UserController.store);
 
 routes.get('/api/profiles/:username', ProfileController.get);
+routes.post('/api/profiles/:username/follow', authMiddleware, ProfileController.follow);
 
 module.exports = routes;

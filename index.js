@@ -15,7 +15,7 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(routes);
 
-sequelize.sync({ force: true }).then(() => {
+sequelize.sync({ alter: true }).then(() => {
   app.listen(3000, () => {
     // eslint-disable-next-line no-console
     console.log('Server running in http://localhost:3000');
