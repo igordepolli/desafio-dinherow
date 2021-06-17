@@ -10,8 +10,10 @@ const ProfileController = require('./src/controllers/ProfileController');
 const routes = express.Router();
 
 routes.post('/api/users/login', SessionController.login);
+
 routes.post('/api/users', UserController.store);
 routes.get('/api/user', authMiddleware, UserController.getCurrentUser);
+routes.put('/api/user', authMiddleware, UserController.update);
 
 routes.get('/api/profiles/:username', ProfileController.get);
 routes.post('/api/profiles/:username/follow', authMiddleware, ProfileController.follow);
