@@ -19,7 +19,6 @@ class TagController {
       const tags = [];
 
       if (promiseTags) {
-        // eslint-disable-next-line no-restricted-syntax
         for (const tag of promiseTags) {
           tags.push(tag.dataValues.name);
         }

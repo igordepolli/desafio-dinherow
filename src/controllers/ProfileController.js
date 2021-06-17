@@ -17,7 +17,6 @@ class ProfileController {
         const user = await User.findByPk(req.userId);
 
         if (user) {
-        // eslint-disable-next-line no-restricted-syntax
           for (const follower of profile.Followers) {
             if (follower.dataValues.id === user.id) {
               following = true;
@@ -52,7 +51,6 @@ class ProfileController {
 
       const user = await User.findByPk(req.userId);
 
-      // eslint-disable-next-line no-restricted-syntax
       for (const follower of profile.Followers) {
         if (follower.dataValues.id === user.id) {
           throw new Error('You already follow this profile!');
@@ -79,10 +77,8 @@ class ProfileController {
 
       const user = await User.findByPk(req.userId);
 
-      // eslint-disable-next-line no-restricted-syntax
       for (const follower of profile.Followers) {
         if (follower.dataValues.id === user.id) {
-          // eslint-disable-next-line no-await-in-loop
           await profile.removeFollowers(user);
           return res.status(200).json({ message: 'Unfollowed!' });
         }

@@ -24,12 +24,9 @@ class ArticleController {
       });
 
       if (tagList) {
-        // eslint-disable-next-line no-restricted-syntax
         for (const tag of tagList) {
-          // eslint-disable-next-line no-await-in-loop
           const existingTag = await Tag.findOne({ where: { name: tag } });
           if (!existingTag) {
-            // eslint-disable-next-line no-await-in-loop
             const newTag = await Tag.create({ name: tag });
             article.addTag(newTag);
           } else {
