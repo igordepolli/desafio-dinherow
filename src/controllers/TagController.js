@@ -1,6 +1,18 @@
 const Tag = require('../models/Tag');
 
 class TagController {
+  async create(tagName) {
+    const newTag = await Tag.create({ name: tagName });
+
+    return newTag;
+  }
+
+  async findTag(tagName) {
+    const tag = await Tag.findOne({ name: tagName });
+
+    return tag;
+  }
+
   async listAll(req, res) {
     try {
       const promiseTags = await Tag.findAll();

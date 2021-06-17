@@ -7,6 +7,7 @@ const UserController = require('./src/controllers/UserController');
 const SessionController = require('./src/controllers/SessionController');
 const ProfileController = require('./src/controllers/ProfileController');
 const TagController = require('./src/controllers/TagController');
+const ArticleController = require('./src/controllers/ArticleController');
 
 const routes = express.Router();
 
@@ -19,6 +20,8 @@ routes.put('/api/user', authMiddleware, UserController.update);
 routes.get('/api/profiles/:username', ProfileController.get);
 routes.post('/api/profiles/:username/follow', authMiddleware, ProfileController.follow);
 routes.delete('/api/profiles/:username/follow', authMiddleware, ProfileController.unfollow);
+
+routes.post('/api/articles', authMiddleware, ArticleController.store);
 
 routes.get('/api/tags', TagController.listAll);
 

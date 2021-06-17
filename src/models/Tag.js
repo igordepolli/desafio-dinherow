@@ -5,7 +5,8 @@ class Tag extends Model {
     super.init({
       name: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       }
     },
     {
