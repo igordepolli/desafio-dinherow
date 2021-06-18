@@ -1,14 +1,40 @@
 const slugify = require('slugify');
 const Article = require('../models/Article');
 const Tag = require('../models/Tag');
+const User = require('../models/User');
 
-function cleanArticle(article, user, count) {
+function formatArticle(article, author, count, favorited, userId) {
   const tagList = [];
-  for (let t of article.dataValues.Tags) {
+  for (const t of article.dataValues.Tags) {
     tagList.push(t.name);
   }
+
+  delete article.dataValues.id;
   delete article.dataValues.Tags;
   article.dataValues.tagList = tagList;
+
+  article.dataValues.favorited = favorited;
+  article.dataValues.favoritesCount = count;
+
+  delete article.dataValues.UserId;
+
+  let following = false;
+  for (const follower of author.Followers) {
+    if (follower.dataValues.id === userId) {
+      following = true;
+    }
+  }
+
+  delete author.dataValues.id;
+  delete author.dataValues.email;
+  delete author.dataValues.password;
+  delete author.dataValues.createdAt;
+  delete author.dataValues.updatedAt;
+  delete author.dataValues.Followers;
+  author.dataValues.following = following;
+  article.dataValues.author = author;
+
+  return article;
 }
 
 class ArticleController {
@@ -26,7 +52,7 @@ class ArticleController {
 
       if (await Article.findOne({ where: { slug } })) { throw new Error('This title already exists, please, choose another'); }
 
-      const article = await Article.create({
+      const articleCreate = await Article.create({
         slug,
         title,
         description,
@@ -35,14 +61,23 @@ class ArticleController {
       });
 
       if (tagList) {
-        const promises = tagList.map((tag) => Tag.findOrCreate({ where: { name: tag } }));
-        const modelTags = await Promise.all(promises);
-        const promises2 = modelTags.map((tag) => article.addTags(tag[0]));
-        await Promise.all(promises2);
+        for (const t of tagList) {
+          const [tag, ] = await Tag.findOrCreate({
+            where: { name: t }
+          });
+
+          const promises = await articleCreate.addTags(tag);
+          Promise.all(promises);
+        }
       }
 
-      const createdArticle = await Article.findByPk(article.id, { include: Tag });
-      return res.status(201).json({ createdArticle });
+      const author = await User.findByPk(req.userId, { include: ['Followers'] });
+      const countFavorites = await articleCreate.countUsers();
+      const favorite = false;
+
+      const articleCreated = await Article.findByPk(articleCreate.id, { include: Tag });
+      const article = formatArticle(articleCreated, author, countFavorites, favorite, req.userId);
+      return res.status(201).json({ article });
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
