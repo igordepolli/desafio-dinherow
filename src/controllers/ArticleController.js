@@ -15,6 +15,8 @@ class ArticleController {
 
       const slug = slugify(title);
 
+      if (await Article.findOne({ where: { slug } })) { throw new Error('This title already exists, please, choose another'); }
+
       const article = await Article.create({
         slug,
         title,
@@ -24,14 +26,12 @@ class ArticleController {
       });
 
       if (tagList) {
-        for (const tag of tagList) {
-          const existingTag = await Tag.findOne({ where: { name: tag } });
-          if (!existingTag) {
-            const newTag = await Tag.create({ name: tag });
-            article.addTag(newTag);
-          } else {
-            article.addTag(existingTag);
-          }
+        for (const t of tagList) {
+          const [tag, ] = await Tag.findOrCreate({
+            where: { name: t }
+          });
+
+          article.addTags(tag);
         }
       }
 

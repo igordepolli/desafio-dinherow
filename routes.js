@@ -8,6 +8,7 @@ const SessionController = require('./src/controllers/SessionController');
 const ProfileController = require('./src/controllers/ProfileController');
 const TagController = require('./src/controllers/TagController');
 const ArticleController = require('./src/controllers/ArticleController');
+const FavouriteController = require('./src/controllers/FavouriteController');
 
 const routes = express.Router();
 
@@ -24,5 +25,7 @@ routes.delete('/api/profiles/:username/follow', authMiddleware, ProfileControlle
 routes.post('/api/articles', authMiddleware, ArticleController.store);
 
 routes.get('/api/tags', TagController.listAll);
+
+routes.post('/api/articles/:slug/favorite', authMiddleware, FavouriteController.favorite);
 
 module.exports = routes;

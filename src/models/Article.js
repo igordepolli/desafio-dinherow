@@ -5,7 +5,8 @@ class Article extends Model {
     super.init({
       slug: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
       title: {
         type: DataTypes.STRING,
