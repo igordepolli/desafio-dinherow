@@ -29,6 +29,7 @@
         "no-await-in-loop": "off",
         "no-restricted-syntax": "off",
         "array-bracket-spacing": "off",
-        "prefer-const": "off"
+        "prefer-const": "off",
+        "no-param-reassign": "off"
     }
 }

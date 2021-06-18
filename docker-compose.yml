@@ -5,6 +5,7 @@ services:
     build: ./docker
     ports:
       - '3000:3000'
+      - '9229:9229'
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgres://postgres:Multilaser42@database:5432/desafio-dinherow

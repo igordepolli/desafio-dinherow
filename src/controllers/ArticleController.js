@@ -2,6 +2,15 @@ const slugify = require('slugify');
 const Article = require('../models/Article');
 const Tag = require('../models/Tag');
 
+function cleanArticle(article, user, count) {
+  const tagList = [];
+  for (let t of article.dataValues.Tags) {
+    tagList.push(t.name);
+  }
+  delete article.dataValues.Tags;
+  article.dataValues.tagList = tagList;
+}
+
 class ArticleController {
   async store(req, res) {
     try {
@@ -26,13 +35,10 @@ class ArticleController {
       });
 
       if (tagList) {
-        for (const t of tagList) {
-          const [tag, ] = await Tag.findOrCreate({
-            where: { name: t }
-          });
-
-          article.addTags(tag);
-        }
+        const promises = tagList.map((tag) => Tag.findOrCreate({ where: { name: tag } }));
+        const modelTags = await Promise.all(promises);
+        const promises2 = modelTags.map((tag) => article.addTags(tag[0]));
+        await Promise.all(promises2);
       }
 
       const createdArticle = await Article.findByPk(article.id, { include: Tag });
