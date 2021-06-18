@@ -3,7 +3,7 @@ const Article = require('../models/Article');
 const Tag = require('../models/Tag');
 const User = require('../models/User');
 
-function formatArticle(article, author, count, favorited, userId) {
+function formatOutput(article, author, count, favorited, userId) {
   const tagList = [];
   for (const t of article.dataValues.Tags) {
     tagList.push(t.name);
@@ -11,12 +11,11 @@ function formatArticle(article, author, count, favorited, userId) {
 
   delete article.dataValues.id;
   delete article.dataValues.Tags;
+  delete article.dataValues.UserId;
   article.dataValues.tagList = tagList;
 
   article.dataValues.favorited = favorited;
   article.dataValues.favoritesCount = count;
-
-  delete article.dataValues.UserId;
 
   let following = false;
   for (const follower of author.Followers) {
@@ -76,7 +75,7 @@ class ArticleController {
       const favorite = false;
 
       const articleCreated = await Article.findByPk(articleCreate.id, { include: Tag });
-      const article = formatArticle(articleCreated, author, countFavorites, favorite, req.userId);
+      const article = formatOutput(articleCreated, author, countFavorites, favorite, req.userId);
       return res.status(201).json({ article });
     } catch (error) {
       return res.status(400).json({ message: error.message });

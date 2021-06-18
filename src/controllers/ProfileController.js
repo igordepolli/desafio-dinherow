@@ -59,7 +59,16 @@ class ProfileController {
 
       await profile.addFollowers(user);
 
-      return res.status(200).json({ message: 'Following!' });
+      const following = true;
+      const { bio, image } = profile;
+      return res.status(200).json({
+        profile: {
+          username,
+          bio,
+          image,
+          following
+        }
+      });
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
@@ -77,10 +86,19 @@ class ProfileController {
 
       const user = await User.findByPk(req.userId);
 
+      const { bio, image } = profile;
       for (const follower of profile.Followers) {
         if (follower.dataValues.id === user.id) {
           await profile.removeFollowers(user);
-          return res.status(200).json({ message: 'Unfollowed!' });
+          const following = false;
+          return res.status(200).json({
+            profile: {
+              username,
+              bio,
+              image,
+              following
+            }
+          });
         }
       }
 
