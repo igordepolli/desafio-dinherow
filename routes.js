@@ -23,6 +23,7 @@ routes.post('/api/profiles/:username/follow', authMiddleware, ProfileController.
 routes.delete('/api/profiles/:username/follow', authMiddleware, ProfileController.unfollow);
 
 routes.post('/api/articles', authMiddleware, ArticleController.store);
+routes.get('/api/articles/:slug/', ArticleController.get);
 
 routes.get('/api/tags', TagController.listAll);
 

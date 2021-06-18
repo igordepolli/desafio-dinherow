@@ -18,9 +18,11 @@ function formatOutput(article, author, count, favorited, userId) {
   article.dataValues.favoritesCount = count;
 
   let following = false;
-  for (const follower of author.Followers) {
-    if (follower.dataValues.id === userId) {
-      following = true;
+  if (userId) {
+    for (const follower of author.Followers) {
+      if (follower.dataValues.id === userId) {
+        following = true;
+      }
     }
   }
 
@@ -77,6 +79,20 @@ class ArticleController {
       const articleCreated = await Article.findByPk(articleCreate.id, { include: Tag });
       const article = formatOutput(articleCreated, author, countFavorites, favorite, req.userId);
       return res.status(201).json({ article });
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  }
+
+  async get(req, res) {
+    try {
+      const { slug } = req.params;
+      const articleFind = await Article.findOne({ where: { slug } });
+
+      const { UserId } = articleFind;
+
+      const author = await User.findByPk(UserId);
+      const article = //TRATAR ALGUMAS COISAS, COMO PASSAR USUÁRIO AO INVES DE USUARIO ID PARA A FUNÇÃO OUTPUT, PARA VERIFICAR SE É FAVORITADO E SEGUIDOR DO AUTOR.
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
