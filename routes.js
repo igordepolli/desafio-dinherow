@@ -27,7 +27,7 @@ routes.get('/api/articles/:slug', authMiddleware, ArticleController.get);
 
 routes.get('/api/tags', TagController.listAll);
 
-routes.post('/api/articles/:slug/favorite', authMiddleware, FavouriteController.favorite);
-routes.delete('/api/articles/:slug/favorite', authMiddleware, FavouriteController.disfavor);
+routes.post('/api/articles/:slug/favorite', authMiddleware, FavouriteController.bookmark);
+routes.delete('/api/articles/:slug/favorite', authMiddleware, FavouriteController.removeBookmark);
 
 module.exports = routes;
