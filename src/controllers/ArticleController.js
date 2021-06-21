@@ -1,50 +1,10 @@
 const slugify = require('slugify');
+
 const Article = require('../models/Article');
 const Tag = require('../models/Tag');
 const User = require('../models/User');
 
-function formatOutput(article, author, user) {
-  const tagList = [];
-  for (const t of article.dataValues.Tags) {
-    tagList.push(t.name);
-  }
-  article.dataValues.tagList = tagList;
-
-  let following = false;
-  let favorited = false;
-  let countFavorites = 0;
-  if (user) {
-    for (const favorite of user.Favourites) {
-      countFavorites += 1;
-      if (favorite.dataValues.id === article.dataValues.id) {
-        favorited = true;
-      }
-    }
-
-    for (const follower of author.Followers) {
-      if (follower.dataValues.id === user.dataValues.id) {
-        following = true;
-      }
-    }
-  }
-  article.dataValues.favorited = favorited;
-  article.dataValues.favoritesCount = countFavorites;
-  author.dataValues.following = following;
-
-  delete article.dataValues.id;
-  delete article.dataValues.Tags;
-  delete article.dataValues.UserId;
-
-  delete author.dataValues.id;
-  delete author.dataValues.email;
-  delete author.dataValues.password;
-  delete author.dataValues.createdAt;
-  delete author.dataValues.updatedAt;
-  delete author.dataValues.Followers;
-  article.dataValues.author = author;
-
-  return article;
-}
+const { formatOutputArticle } = require('../utils/FormatOutputs');
 
 class ArticleController {
   async store(req, res) {
@@ -83,7 +43,7 @@ class ArticleController {
       const author = await User.findByPk(req.userId, { include: ['Followers'] });
       const articleCreated = await Article.findByPk(articleCreate.id, { include: Tag });
 
-      const article = formatOutput(articleCreated, author, null);
+      const article = formatOutputArticle(articleCreated, author, null);
       return res.status(201).json({ article });
     } catch (error) {
       return res.status(400).json({ message: error.message });
@@ -104,7 +64,7 @@ class ArticleController {
         user = await User.findByPk(req.userId, { include: ['Favourites'] });
       }
 
-      const article = formatOutput(articleFind, author, user);
+      const article = formatOutputArticle(articleFind, author, user);
       return res.status(200).json({ article });
     } catch (error) {
       return res.status(400).json({ message: error.message });
