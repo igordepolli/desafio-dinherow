@@ -30,8 +30,8 @@ Comment.belongsTo(User);
 User.belongsToMany(User, { through: 'UserUser', as: 'Followers' });
 
 // Relation many to many between User and Articles(Favourites)
-Article.belongsToMany(User, { through: 'UserArticle' });
-User.belongsToMany(Article, { through: 'UserArticle' });
+Article.belongsToMany(User, { through: 'UserArticle', as: 'Favourites' });
+User.belongsToMany(Article, { through: 'UserArticle', as: 'Favourites' });
 
 // Relation many to many between Article and Tags(TagList)
 Article.belongsToMany(Tag, { through: 'ArticleTag' });

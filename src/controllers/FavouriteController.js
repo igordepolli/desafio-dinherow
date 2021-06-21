@@ -12,7 +12,7 @@ class FavouriteController {
 
       // const author = await User.findByPk(article.UserId);
 
-      await article.addUsers(req.userId);
+      await article.addFavourites(req.userId);
       // const countFauvorites = await article.countUsers();
 
       return res.status(200).json({ article });
@@ -28,7 +28,7 @@ class FavouriteController {
 
       if (!article) { throw new Error('Article not found!'); }
 
-      await article.removeUsers(req.userId);
+      await article.removeFavourites(req.userId);
 
       return res.status(200).json({ article });
     } catch (error) {
