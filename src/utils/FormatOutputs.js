@@ -5,7 +5,6 @@ module.exports.formatOutputArticle = async (article, author, user) => {
   }
   article.dataValues.tagList = tagList;
 
-  let following = false;
   let favorited = false;
   if (user) {
     for (const favorite of user.Favourites) {
@@ -13,15 +12,8 @@ module.exports.formatOutputArticle = async (article, author, user) => {
         favorited = true;
       }
     }
-
-    for (const follower of author.Followers) {
-      if (follower.dataValues.id === user.dataValues.id) {
-        following = true;
-      }
-    }
   }
   article.dataValues.favorited = favorited;
-  author.dataValues.following = following;
 
   const countFavorites = await article.countFavourites();
   article.dataValues.favoritesCount = countFavorites;
@@ -30,14 +22,29 @@ module.exports.formatOutputArticle = async (article, author, user) => {
   delete article.dataValues.Tags;
   delete article.dataValues.UserId;
 
-  delete author.dataValues.id;
-  delete author.dataValues.email;
-  delete author.dataValues.password;
-  delete author.dataValues.createdAt;
-  delete author.dataValues.updatedAt;
-  delete author.dataValues.Followers;
-  delete author.dataValues.Favourites;
-  article.dataValues.author = author;
+  article.dataValues.author = this.formatOutputProfile(author, user);
 
   return article;
+};
+
+module.exports.formatOutputProfile = (profile, user) => {
+  let following = false;
+  if (user) {
+    for (const follower of profile.Followers) {
+      if (follower.dataValues.id === user.id) {
+        following = true;
+      }
+    }
+  }
+  profile.dataValues.following = following;
+
+  delete profile.dataValues.id;
+  delete profile.dataValues.email;
+  delete profile.dataValues.password;
+  delete profile.dataValues.createdAt;
+  delete profile.dataValues.updatedAt;
+  delete profile.dataValues.Followers;
+  delete profile.dataValues.Favourites;
+
+  return profile;
 };

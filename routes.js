@@ -9,6 +9,7 @@ const ProfileController = require('./src/controllers/ProfileController');
 const TagController = require('./src/controllers/TagController');
 const ArticleController = require('./src/controllers/ArticleController');
 const FavouriteController = require('./src/controllers/FavouriteController');
+const CommentController = require('./src/controllers/CommentController');
 
 const routes = express.Router();
 
@@ -31,5 +32,7 @@ routes.get('/api/tags', TagController.listAll);
 
 routes.post('/api/articles/:slug/favorite', authMiddleware, FavouriteController.bookmark);
 routes.delete('/api/articles/:slug/favorite', authMiddleware, FavouriteController.removeBookmark);
+
+routes.post('/api/articles/:slug/comments', authMiddleware, CommentController.store);
 
 module.exports = routes;
