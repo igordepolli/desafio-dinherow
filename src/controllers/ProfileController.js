@@ -7,9 +7,7 @@ class ProfileController {
 
       const profile = await User.findOne({ where: { username }, include: ['Followers'] });
 
-      if (!profile) {
-        throw new Error(`Profile ${username} not found!`);
-      }
+      if (!profile) { throw new Error(`Profile ${username} not found!`); }
 
       let following = false;
 
@@ -45,16 +43,14 @@ class ProfileController {
 
       const profile = await User.findOne({ where: { username }, include: ['Followers'] });
 
-      if (!profile) {
-        throw new Error(`Profile ${username} not found!`);
-      }
+      if (!profile) { throw new Error(`Profile ${username} not found!`); }
+
+      if (req.userId === profile.id) { throw new Error("You can't follow yourself!"); }
 
       const user = await User.findByPk(req.userId);
 
       for (const follower of profile.Followers) {
-        if (follower.dataValues.id === user.id) {
-          throw new Error('You already follow this profile!');
-        }
+        if (follower.dataValues.id === user.id) { throw new Error('You already follow this profile!'); }
       }
 
       await profile.addFollowers(user);
@@ -80,9 +76,7 @@ class ProfileController {
 
       const profile = await User.findOne({ where: { username }, include: ['Followers'] });
 
-      if (!profile) {
-        throw new Error(`Profile ${username} not found!`);
-      }
+      if (!profile) { throw new Error(`Profile ${username} not found!`); }
 
       const user = await User.findByPk(req.userId);
 

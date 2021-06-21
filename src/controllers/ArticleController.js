@@ -55,16 +55,22 @@ class ArticleController {
       const { slug } = req.params;
       let article = await Article.findOne({ where: { slug }, include: Tag });
 
-      const { UserId } = article;
+      if (!article) { throw new Error('Article not found!'); }
 
-      const author = await User.findByPk(UserId, { include: ['Followers'] });
+      const author = await User.findByPk(article.UserId, { include: ['Followers', 'Favourites'] });
 
       let user = null;
       if (req.userId) {
-        user = await User.findByPk(req.userId, { include: ['Favourites'] });
+        if (req.userId === author.id) {
+          article = await formatOutputArticle(article, author, author);
+        } else {
+          user = await User.findByPk(req.userId, { include: ['Favourites'] });
+          article = await formatOutputArticle(article, author, user);
+        }
+      } else {
+        article = await formatOutputArticle(article, author, user);
       }
 
-      article = await formatOutputArticle(article, author, user);
       return res.status(200).json({ article });
     } catch (error) {
       return res.status(400).json({ message: error.message });
@@ -77,11 +83,11 @@ class ArticleController {
 
       let article = await Article.findOne({ where: { slug }, include: Tag });
 
+      if (!article) { throw new Error('Article not found!'); }
+
       if (req.userId !== article.UserId) { throw new Error("You don't have authorization for edit this article!"); }
 
-      const author = await User.findByPk(req.userId);
-
-      if (!article) { throw new Error('Article not found!'); }
+      const author = await User.findByPk(article.UserId, { include: ['Followers', 'Favourites'] });
 
       let { title } = article;
       if (req.body.article.title && req.body.article.title !== article.title) {
@@ -103,7 +109,13 @@ class ArticleController {
         slug, title, description, body
       });
 
-      article = await formatOutputArticle(article, author, null);
+      if (req.userId === author.id) {
+        article = await formatOutputArticle(article, author, author);
+      } else {
+        const user = await User.findByPk(req.userId, { include: ['Favourites'] });
+        article = await formatOutputArticle(article, author, user);
+      }
+
       return res.status(200).json({ article });
     } catch (error) {
       return res.status(400).json({ message: error.message });

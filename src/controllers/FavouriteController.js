@@ -14,10 +14,14 @@ class FavouriteController {
 
       await article.addFavourites(req.userId);
 
-      const user = await User.findByPk(req.userId, { include: ['Favourites'] });
       const author = await User.findByPk(article.UserId, { include: ['Followers', 'Favourites'] });
+      if (author.id === req.userId) {
+        article = await formatOutputArticle(article, author, author);
+      } else {
+        const user = await User.findByPk(req.userId, { include: ['Favourites'] });
+        article = await formatOutputArticle(article, author, user);
+      }
 
-      article = await formatOutputArticle(article, author, user);
       return res.status(200).json({ article });
     } catch (error) {
       return res.status(400).json({ message: error.message });
@@ -33,10 +37,14 @@ class FavouriteController {
 
       await article.removeFavourites(req.userId);
 
-      const user = await User.findByPk(req.userId, { include: ['Favourites'] });
-      const author = await User.findByPk(article.UserId, { include: ['Followers'] });
+      const author = await User.findByPk(article.UserId, { include: ['Followers', 'Favourites'] });
+      if (author.id === req.userId) {
+        article = await formatOutputArticle(article, author, author);
+      } else {
+        const user = await User.findByPk(req.userId, { include: ['Favourites'] });
+        article = await formatOutputArticle(article, author, user);
+      }
 
-      article = await formatOutputArticle(article, author, user);
       return res.status(200).json({ article });
     } catch (error) {
       return res.status(400).json({ message: error.message });

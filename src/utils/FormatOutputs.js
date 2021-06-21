@@ -36,6 +36,7 @@ module.exports.formatOutputArticle = async (article, author, user) => {
   delete author.dataValues.createdAt;
   delete author.dataValues.updatedAt;
   delete author.dataValues.Followers;
+  delete author.dataValues.Favourites;
   article.dataValues.author = author;
 
   return article;
