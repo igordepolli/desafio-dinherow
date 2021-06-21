@@ -54,7 +54,6 @@ class ArticleController {
     try {
       const { slug } = req.params;
       let article = await Article.findOne({ where: { slug }, include: Tag });
-
       if (!article) { throw new Error('Article not found!'); }
 
       const author = await User.findByPk(article.UserId, { include: ['Followers', 'Favourites'] });
@@ -80,11 +79,8 @@ class ArticleController {
   async update(req, res) {
     try {
       let { slug } = req.params;
-
       let article = await Article.findOne({ where: { slug }, include: Tag });
-
       if (!article) { throw new Error('Article not found!'); }
-
       if (req.userId !== article.UserId) { throw new Error("You don't have authorization for edit this article!"); }
 
       const author = await User.findByPk(article.UserId, { include: ['Followers', 'Favourites'] });
@@ -117,6 +113,20 @@ class ArticleController {
       }
 
       return res.status(200).json({ article });
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  }
+
+  async delete(req, res) {
+    try {
+      let { slug } = req.params;
+      let article = await Article.findOne({ where: { slug }, include: Tag });
+      if (!article) { throw new Error('Article not found!'); }
+      if (req.userId !== article.UserId) { throw new Error("You don't have authorization for delete this article!"); }
+
+      await article.destroy();
+      return res.status(200).json({ message: 'Article deleted successfully' });
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
