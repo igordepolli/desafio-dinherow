@@ -48,3 +48,17 @@ module.exports.formatOutputProfile = (profile, user) => {
 
   return profile;
 };
+
+module.exports.formatOutputComments = (comments, user) => {
+  let newArrayOfComments = [];
+  for (const comment of comments) {
+    delete comment.dataValues.ArticleId;
+    delete comment.dataValues.UserId;
+
+    comment.dataValues.author = this.formatOutputProfile(comment.dataValues.User, user);
+    delete comment.dataValues.User;
+    newArrayOfComments.push(comment);
+  }
+
+  return newArrayOfComments;
+};

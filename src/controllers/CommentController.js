@@ -2,7 +2,7 @@ const Article = require('../models/Article');
 const User = require('../models/User');
 const Comment = require('../models/Comment');
 
-const { formatOutputProfile } = require('../utils/FormatOutputs');
+const { formatOutputProfile, formatOutputComments } = require('../utils/FormatOutputs');
 
 class CommentController {
   async store(req, res) {
@@ -41,6 +41,26 @@ class CommentController {
 
       await comment.destroy();
       return res.status(200).json({ message: 'Comment deleted successfully' });
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  }
+
+  async getCommentsFromArticle(req, res) {
+    try {
+      const { slug } = req.params;
+      const article = await Article.findOne({ where: { slug } });
+      if (!article) { throw new Error('Article not found!'); }
+
+      let comments = await Comment.findAll({ where: { ArticleId: article.id }, include: User });
+
+      let user = null;
+      if (req.userId) {
+        user = await User.findByPk(req.userId);
+      }
+
+      comments = formatOutputComments(comments, user);
+      return res.status(200).json({ comments });
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
