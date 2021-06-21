@@ -27,6 +27,7 @@ routes.post('/api/articles', authMiddleware, ArticleController.store);
 routes.get('/api/articles/:slug', ArticleController.get);
 routes.put('/api/articles/:slug', authMiddleware, ArticleController.update);
 routes.delete('/api/articles/:slug', authMiddleware, ArticleController.delete);
+routes.get('/api/articles', ArticleController.getAll);
 
 routes.get('/api/tags', TagController.listAll);
 

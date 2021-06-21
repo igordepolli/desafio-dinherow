@@ -4,7 +4,7 @@ const Article = require('../models/Article');
 const Tag = require('../models/Tag');
 const User = require('../models/User');
 
-const { formatOutputArticle } = require('../utils/FormatOutputs');
+const { formatOutputArticle, formatOutputArticles } = require('../utils/FormatOutputs');
 
 class ArticleController {
   async store(req, res) {
@@ -127,6 +127,22 @@ class ArticleController {
 
       await article.destroy();
       return res.status(200).json({ message: 'Article deleted successfully' });
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  }
+
+  async getAll(req, res) {
+    try {
+      let articles = await Article.findAll({ include: [User, Tag] });
+
+      let user = null;
+      if (req.userId) {
+        user = await User.findByPk(req.userId);
+      }
+
+      articles = await formatOutputArticles(articles, user);
+      return res.status(200).json({ articles });
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }

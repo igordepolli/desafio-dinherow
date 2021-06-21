@@ -21,6 +21,7 @@ module.exports.formatOutputArticle = async (article, author, user) => {
   delete article.dataValues.id;
   delete article.dataValues.Tags;
   delete article.dataValues.UserId;
+  delete article.dataValues.User;
 
   article.dataValues.author = this.formatOutputProfile(author, user);
 
@@ -61,4 +62,14 @@ module.exports.formatOutputComments = (comments, user) => {
   }
 
   return newArrayOfComments;
+};
+
+module.exports.formatOutputArticles = async (articles, user) => {
+  let newArrayOfArticles = [];
+  for (const article of articles) {
+    const articleModified = await this.formatOutputArticle(article, article.User, user);
+    newArrayOfArticles.push(articleModified);
+  }
+
+  return newArrayOfArticles;
 };
