@@ -34,5 +34,6 @@ routes.post('/api/articles/:slug/favorite', authMiddleware, FavouriteController.
 routes.delete('/api/articles/:slug/favorite', authMiddleware, FavouriteController.removeBookmark);
 
 routes.post('/api/articles/:slug/comments', authMiddleware, CommentController.store);
+routes.delete('/api/articles/:slug/comments/:id', authMiddleware, CommentController.delete);
 
 module.exports = routes;
