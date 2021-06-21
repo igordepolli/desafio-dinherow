@@ -34,7 +34,7 @@ Article.belongsToMany(User, { through: 'UserArticle', as: 'Favourites' });
 User.belongsToMany(Article, { through: 'UserArticle', as: 'Favourites' });
 
 // Relation many to many between Article and Tags(TagList)
-Article.belongsToMany(Tag, { through: 'ArticleTag' });
-Tag.belongsToMany(Article, { through: 'ArticleTag' });
+Article.belongsToMany(Tag, { through: 'ArticleTag', as: 'TagsOfArticle' });
+Tag.belongsToMany(Article, { through: 'ArticleTag', as: 'TagsOfArticle' });
 
 module.exports = sequelize;

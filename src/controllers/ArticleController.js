@@ -43,7 +43,7 @@ class ArticleController {
       const author = await User.findByPk(req.userId, { include: ['Followers'] });
       const articleCreated = await Article.findByPk(articleCreate.id, { include: Tag });
 
-      const article = formatOutputArticle(articleCreated, author, null);
+      const article = await formatOutputArticle(articleCreated, author, null);
       return res.status(201).json({ article });
     } catch (error) {
       return res.status(400).json({ message: error.message });
@@ -53,9 +53,9 @@ class ArticleController {
   async get(req, res) {
     try {
       const { slug } = req.params;
-      const articleFind = await Article.findOne({ where: { slug }, include: Tag });
+      let article = await Article.findOne({ where: { slug }, include: Tag });
 
-      const { UserId } = articleFind;
+      const { UserId } = article;
 
       const author = await User.findByPk(UserId, { include: ['Followers'] });
 
@@ -64,7 +64,46 @@ class ArticleController {
         user = await User.findByPk(req.userId, { include: ['Favourites'] });
       }
 
-      const article = formatOutputArticle(articleFind, author, user);
+      article = await formatOutputArticle(article, author, user);
+      return res.status(200).json({ article });
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  }
+
+  async update(req, res) {
+    try {
+      let { slug } = req.params;
+
+      let article = await Article.findOne({ where: { slug }, include: Tag });
+
+      if (req.userId !== article.UserId) { throw new Error("You don't have authorization for edit this article!"); }
+
+      const author = await User.findByPk(req.userId);
+
+      if (!article) { throw new Error('Article not found!'); }
+
+      let { title } = article;
+      if (req.body.article.title && req.body.article.title !== article.title) {
+        const checkHasTitle = await Article.findOne({
+          where: { title: req.body.article.title }
+        });
+
+        if (checkHasTitle) { throw new Error('Title already exists!'); }
+
+        title = req.body.article.title;
+        slug = slugify(title);
+      }
+
+      const description = req.body.article.description
+        ? req.body.article.description : article.description;
+      const body = req.body.article.body ? req.body.article.body : article.body;
+
+      await article.update({
+        slug, title, description, body
+      });
+
+      article = await formatOutputArticle(article, author, null);
       return res.status(200).json({ article });
     } catch (error) {
       return res.status(400).json({ message: error.message });

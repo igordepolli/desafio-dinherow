@@ -1,4 +1,4 @@
-module.exports.formatOutputArticle = (article, author, user) => {
+module.exports.formatOutputArticle = async (article, author, user) => {
   const tagList = [];
   for (const t of article.dataValues.Tags) {
     tagList.push(t.name);
@@ -7,10 +7,8 @@ module.exports.formatOutputArticle = (article, author, user) => {
 
   let following = false;
   let favorited = false;
-  let countFavorites = 0;
   if (user) {
     for (const favorite of user.Favourites) {
-      countFavorites += 1;
       if (favorite.dataValues.id === article.dataValues.id) {
         favorited = true;
       }
@@ -23,8 +21,10 @@ module.exports.formatOutputArticle = (article, author, user) => {
     }
   }
   article.dataValues.favorited = favorited;
-  article.dataValues.favoritesCount = countFavorites;
   author.dataValues.following = following;
+
+  const countFavorites = await article.countFavourites();
+  article.dataValues.favoritesCount = countFavorites;
 
   delete article.dataValues.id;
   delete article.dataValues.Tags;

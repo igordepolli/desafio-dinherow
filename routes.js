@@ -24,6 +24,7 @@ routes.delete('/api/profiles/:username/follow', authMiddleware, ProfileControlle
 
 routes.post('/api/articles', authMiddleware, ArticleController.store);
 routes.get('/api/articles/:slug', authMiddleware, ArticleController.get);
+routes.put('/api/articles/:slug', authMiddleware, ArticleController.update);
 
 routes.get('/api/tags', TagController.listAll);
 

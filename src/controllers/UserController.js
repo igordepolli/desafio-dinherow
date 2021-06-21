@@ -35,11 +35,9 @@ class UserController {
     try {
       const user = await User.findByPk(req.userId);
 
-      if (!user) {
-        throw new Error('User not found!');
-      }
+      if (!user) { throw new Error('User not found!'); }
 
-      let { email } = user;
+      let { email, username } = user;
       if (req.body.user.email && req.body.user.email !== user.email) {
         const checkHasEmail = await User.findOne({ where: { email: req.body.user.email } });
 
@@ -48,7 +46,6 @@ class UserController {
         email = req.body.user.email;
       }
 
-      let { username } = user;
       if (req.body.user.username && req.body.user.username !== user.username) {
         const checkHasUsername = await User.findOne({
           where:
